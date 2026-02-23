@@ -1,0 +1,24 @@
+# Model files
+*.pth
+best_model_fold_5.pth
+
+# Video files
+*.mp4
+case_2001.mp4
+
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+env/
+venv/
+cvenv/
+
+# IDE
+.vscode/
+.idea/
+
+# OS
+.DS_Store
