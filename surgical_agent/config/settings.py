@@ -26,6 +26,13 @@ SURGICAL_TIMELINE = [
     "Idle",
 ]
 
+PHASE_LIMITS = {
+    "Incision": 45,
+    "Viscoelastic": 60,
+    "Phacoemulsification": 300, # 5 minutes
+    "Capsulorhexis": 120
+}
+
 TRANSFORM_PIPELINE = transforms.Compose(
     [
         transforms.Resize((224, 224)),

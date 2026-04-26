@@ -13,6 +13,8 @@ from surgical_agent.config import (
 from surgical_agent.models import load_model
 from surgical_agent.utils import LiveCameraSimulator, preprocess_frame
 from surgical_agent.ui import render_overlay
+from surgical_agent.reasoning import SurgicalReasoningAgent
+from surgical_agent.logger import SurgicalLogger
 
 
 def main():
@@ -24,9 +26,14 @@ def main():
     vs = LiveCameraSimulator("case_2001.mp4").start()
     print(f"✓ Video stream initialized at {vs.fps} FPS")
 
+    reasoner = SurgicalReasoningAgent(SURGICAL_TIMELINE)
+    logger = SurgicalLogger()
     frame_buffer = collections.deque(maxlen=16)
 
-    current_phase = "Detecting..."
+    frame_idx = 0
+
+    active_phase = "Initializing..."
+    active_alerts = []
     confidence_val = 0.0
     last_ai_time = 0
 
@@ -44,6 +51,9 @@ def main():
             img_tensor = preprocess_frame(frame)
             frame_buffer.append(img_tensor)
 
+            frame_idx += 1
+            video_time_sec = frame_idx / vs.fps
+
             now = time.time()
             if len(frame_buffer) == 16 and (now - last_ai_time) > AI_PROCESS_INTERVAL:
                 input_seq = (
@@ -53,15 +63,23 @@ def main():
                     output = model(input_seq)
                     prob = torch.nn.functional.softmax(output, dim=1)
                     conf, pred_idx = torch.max(prob, 1)
-                    current_phase = SURGICAL_TIMELINE[pred_idx.item()]
+                    
+                    raw_phase = SURGICAL_TIMELINE[pred_idx.item()]
                     confidence_val = conf.item()
+
+                    # Pass raw prediction to the reasoning layer
+                    active_phase, active_alerts = reasoner.verify_step(raw_phase, confidence_val)
+
+                    # Save to log
+                    logger.add_entry(frame_idx, video_time_sec, active_phase, confidence_val, active_alerts)
+                
                 last_ai_time = now
 
       
-            display_frame = render_overlay(frame, current_phase, confidence_val)
+            display_frame = render_overlay(frame, active_phase, confidence_val, active_alerts, frame_idx, video_time_sec)
 
             cv2.imshow(
-                "Surgical Agent - 1x Real-Time Simulation", display_frame
+                "Surgical Safety Agent (Idea 1 + 3)", display_frame
             )
 
             elapsed = time.time() - frame_start
@@ -79,6 +97,7 @@ def main():
     finally:
         vs.stop()
         cv2.destroyAllWindows()
+        logger.generate_final_report()
         print("✓ Resources released successfully")
         print("\n--- AGENT SHUTDOWN COMPLETE ---\n")
 

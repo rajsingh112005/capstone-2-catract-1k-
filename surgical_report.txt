@@ -1,0 +1,41 @@
+=== AUTONOMOUS SURGICAL REPORT ===
+Date: 2026-04-26 19:35:53
+Total Video Duration: 1.3 seconds
+Status: COMPLETED WITH ANOMALIES
+
+--- PHASE SUMMARY ---
+- Phacoemulsification: ~0.7s
+- Viscoelastic_Suction: ~0.4s
+- Capsulorhexis: ~2.4s
+- Hydrodissection: ~1.4s
+- Lens_Positioning: ~1.4s
+
+--- AI REASONING OVER ANOMALIES ---
+[0.27s] CRITICAL: Phase Skip (Initializing... -> Phacoemulsification)
+   > INSIGHT: Potential risk of tissue trauma due to bypassed preparation step.
+[0.37s] VISUAL: Low Model Confidence
+[0.38s] CRITICAL: Phase Skip (Phacoemulsification -> Viscoelastic_Suction), VISUAL: Low Model Confidence
+   > INSIGHT: Potential risk of tissue trauma due to bypassed preparation step.
+[0.4s] VISUAL: Low Model Confidence
+[0.42s] VISUAL: Low Model Confidence
+[0.43s] VISUAL: Low Model Confidence
+[0.45s] VISUAL: Low Model Confidence
+[0.75s] VISUAL: Low Model Confidence
+[0.77s] VISUAL: Low Model Confidence
+[0.78s] VISUAL: Low Model Confidence
+[0.8s] VISUAL: Low Model Confidence
+[0.87s] VISUAL: Low Model Confidence
+[0.88s] VISUAL: Low Model Confidence
+[0.9s] VISUAL: Low Model Confidence
+[0.92s] VISUAL: Low Model Confidence
+[0.93s] VISUAL: Low Model Confidence
+[0.95s] VISUAL: Low Model Confidence
+[1.05s] VISUAL: Low Model Confidence
+[1.07s] VISUAL: Low Model Confidence
+[1.08s] VISUAL: Low Model Confidence
+[1.1s] VISUAL: Low Model Confidence
+[1.23s] VISUAL: Low Model Confidence
+[1.25s] VISUAL: Low Model Confidence
+[1.27s] VISUAL: Low Model Confidence
+[1.28s] VISUAL: Low Model Confidence
+[1.3s] VISUAL: Low Model Confidence
