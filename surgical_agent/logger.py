@@ -24,7 +24,14 @@ class SurgicalLogger:
         
         # BASIC REASONING LOGIC (AGENTIC LAYER)
         total_duration = self.logs[-1]['timestamp'] if self.logs else 0
-        phase_counts = collections.Counter([log['phase'] for log in self.logs])
+        
+        phase_durations = collections.defaultdict(float)
+        if self.logs:
+            phase_durations[self.logs[0]['phase']] += self.logs[0]['timestamp']
+            for i in range(1, len(self.logs)):
+                duration = self.logs[i]['timestamp'] - self.logs[i-1]['timestamp']
+                phase_durations[self.logs[i]['phase']] += duration
+
         anomaly_logs = [log for log in self.logs if log['alerts'] != "None"]
 
         with open(report_path, "w") as f:
@@ -34,9 +41,8 @@ class SurgicalLogger:
             f.write(f"Status: {'COMPLETED WITH ANOMALIES' if anomaly_logs else 'SUCCESSFUL'}\n\n")
             
             f.write("--- PHASE SUMMARY ---\n")
-            for phase, count in phase_counts.items():
-                # Rough estimate of time spent per phase
-                f.write(f"- {phase}: ~{round(count * AI_PROCESS_INTERVAL, 1)}s\n")
+            for phase, duration in phase_durations.items():
+                f.write(f"- {phase}: ~{round(duration, 1)}s\n")
             
             f.write("\n--- AI REASONING OVER ANOMALIES ---\n")
             if not anomaly_logs:
